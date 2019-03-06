@@ -53,7 +53,7 @@ services:
   # After some processing/checks and transformation, the request is forwarded
   # to PostgREST down the stack.
   openresty:
-    image: openresty/openresty:jessie
+    image: openresty/openresty:1.13.6.2-2-centos
     ports:
       - "8080:80"
     links:
