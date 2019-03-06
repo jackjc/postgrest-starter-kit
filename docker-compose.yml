@@ -8,7 +8,7 @@ services:
   # use a separate database instance, like Amazon RDS, i.e. in production this section will be
   # commented and in the .env file you will specify the ip of your separate database instance
   db:
-    image: postgres:9.6
+    image: timescale/timescaledb-postgis:latest-pg11
     ports:
       - "5432:5432"
     environment:
@@ -80,26 +80,26 @@ services:
 
   # pg-amqp-bridge instance is responsible for forwarding NOTIFY events in PostgreSQL
   # to RabbitMQ based on the BRIDGE_CHANNELS configuration
-  pg_amqp_bridge:
-    image: subzerocloud/pg-amqp-bridge
-    links:
-      - db
-      - rabbitmq
-    environment:
-      - RUST_LOG=info # output forwarded messages
-      - POSTGRESQL_URI=postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}
-      - AMQP_URI=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq//
-      - BRIDGE_CHANNELS=events:amq.topic
+  # pg_amqp_bridge:
+  #   image: subzerocloud/pg-amqp-bridge
+  #   links:
+  #     - db
+  #     - rabbitmq
+  #   environment:
+  #     - RUST_LOG=info # output forwarded messages
+  #     - POSTGRESQL_URI=postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+  #     - AMQP_URI=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq//
+  #     - BRIDGE_CHANNELS=events:amq.topic
 
   # RabbitMQ instance can be used to consolidate events that originated in your database/application.
   # You can connect here with different consumers and take actions based on those events (like sending signup emails)
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5671:5671"
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   ports:
+  #     - "5671:5671"
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+  #     - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
 
